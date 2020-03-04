@@ -8,26 +8,41 @@ import java.util.Scanner;
 
 public class MazeSolver {
 
-    //0 = wall
-    //1 = path
-    //2 = destination
+    //0 = Maze wall
+    //1 = Maze available path
+    //2 = Maze finsh destination
+    //3 = Maze Start position
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        ArrayList<Maze> mazes = readMazes();
 
+        //Registrer tiden når programmet starter i nanosekunder.
+        float startTime = System.nanoTime();
+
+        //Arrayliste der indeholder layouts for mazes
+        ArrayList<Maze> mazes = readMazes();
 
         int i = 0;
         while (i < mazes.size()){
             if (solveMaze(mazes.get(i))){
                 System.out.println("YOU WOOON!!!\n");
+
             }else {
-                System.out.println("No path available");
+                System.out.println("No path available\n");
             }
             i++;
         }
+
+        //registrer når programmet slutter i nanosekunder
+        float endTime = System.nanoTime();
+        //udregner tiden hvor langtid programmet kørte i sekunder
+        float totalTime = (endTime -startTime)/100000000;
+        System.out.println("Det tog " + totalTime+ " sekunder for at gennemføre Mazes.");
+        //System.out.println("Der blev brugt " + m.path.size() + " ryk til at finde ud af mazen");
+
     }
 
+    //Metode der indlæster maze layout
     private static ArrayList<Maze> readMazes() throws FileNotFoundException {
 
         ArrayList<Maze> mazes = new ArrayList<Maze>();
@@ -40,7 +55,7 @@ public class MazeSolver {
             int rows = Integer.parseInt(in.nextLine());
             m.maze = new int[rows][];
 
-            //loop
+            //for-loop der kører igennem Mazes text filen og indlæser rækkerne i mazen
             for (int i = 0; i < rows; i++){
                 String line = in.nextLine();
                 m.maze[i] = Arrays.stream(line.split(", ")).mapToInt(Integer::parseInt).toArray();
@@ -72,7 +87,7 @@ public class MazeSolver {
 
             m.maze[y][x] = 0;
 
-            //down
+            //ned funktion
             if(isValid(y+1, x, m)) {
                 if(m.maze[y+1][x] == 2) {
                     System.out.println("Moved down");
@@ -85,7 +100,7 @@ public class MazeSolver {
                 }
             }
 
-            //left
+            //venstre funktion
             if(isValid(y, x-1, m)) {
                 if(m.maze[y][x-1] == 2) {
                     System.out.println("Moved left");
@@ -98,7 +113,7 @@ public class MazeSolver {
                 }
             }
 
-            //up
+            //op funktion
             if(isValid(y-1, x, m)) {
                 if(m.maze[y-1][x] == 2) {
                     System.out.println("Moved up");
@@ -111,7 +126,7 @@ public class MazeSolver {
                 }
             }
 
-            //right
+            //højre funktion
             if(isValid(y, x+1, m)) {
                 if(m.maze[y][x+1] == 2) {
                     System.out.println("Moved right");
@@ -124,6 +139,7 @@ public class MazeSolver {
                 }
             }
 
+            //pop udvælger det første element i en stack
             m.path.pop();
             System.out.println("Moved back");
             if(m.path.size() <= 0) {
